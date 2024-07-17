@@ -15,8 +15,10 @@ function App() {
   return (
     <QuizSettingsContextProvider>
       <Header />
-      {!isQuizStarted && <Settings onStart={handleStartQuiz} />}
-      {isQuizStarted && <Quiz />}
+      <main>
+        {!isQuizStarted && <Settings onStart={handleStartQuiz} />}
+        {isQuizStarted && <Quiz />}
+      </main>
     </QuizSettingsContextProvider>
   );
 }
