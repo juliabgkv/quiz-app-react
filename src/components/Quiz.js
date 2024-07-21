@@ -1,9 +1,12 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useCallback } from "react";
 import { QuizSettingsContext } from "../store/quiz-settings-context";
+import Question from "./Question";
+import "./Quiz.css";
 
 function Quiz() {
   const [userAnswers, setUserAnswers] = useState([]);
   const [questions, setQuestions] = useState(null);
+  // const [answerState, setAnswerState] = useState("");
 
   const { settings } = useContext(QuizSettingsContext);
 
@@ -16,6 +19,7 @@ function Quiz() {
   }
 
   useEffect(() => {
+    console.log("FETCHING QUESTIONS");
     let apiUrl = `https://opentdb.com/api.php?amount=${settings.questionQuantity}`;
 
     if (settings.category !== "any") {
@@ -33,6 +37,7 @@ function Quiz() {
     fetch(apiUrl)
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
         if (data.response_code === 0) {
           const questions = data.results.map((question) => {
             return {
@@ -42,47 +47,48 @@ function Quiz() {
               answers: [question.correct_answer, ...question.incorrect_answers],
             };
           });
-          console.log(data);
-          console.log(questions);
           setQuestions(questions);
+        } else if (data.response_code === 5) {
+          throw new Error("Too many requests. Try Later!");
         }
       })
       .catch((error) => console.error(error));
   }, [settings]);
 
-  function handleSelectAnswer(selectedAnswer) {
-    setUserAnswers((prevAnswers) => [...prevAnswers, selectedAnswer]);
-  }
+  const handleSelectAnswer = useCallback(
+    (selectedAnswer) => {
+      setUserAnswers((prevAnswers) => [...prevAnswers, selectedAnswer]);
+    },
+    [activeQuestionIndex]
+  );
+
+  const handleSkipAnswer = useCallback(() => {
+    handleSelectAnswer(null);
+  }, [handleSelectAnswer]);
 
   if (quizIsComplete) {
-    console.log('quizIsComplete');
-    return <div>
-      <h2>Quiz is completed</h2>
-    </div>;
-  }
-
-  let shuffeledAnswers = [];
-
-  if (questions) {
-    shuffeledAnswers = [...questions[activeQuestionIndex].answers];
-    shuffeledAnswers.sort(() => Math.random() - 0.5);
+    return (
+      <div>
+        <h2>Quiz is completed</h2>
+      </div>
+    );
   }
 
   return (
     <>
       {questions && (
-        <div>
-          <h2>{questions[activeQuestionIndex].question.toString()}</h2>
-          <ul>
-            {shuffeledAnswers.map((answer) => (
-              <li key={answer}>
-                <button onClick={() => handleSelectAnswer(answer)}>
-                  {answer}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <>
+          <div>
+            Question {activeQuestionIndex + 1} of {questions.length}
+          </div>
+          <Question
+            key={activeQuestionIndex}
+            questionIndex={activeQuestionIndex}
+            questions={questions}
+            onSelectAnswer={handleSelectAnswer}
+            onSkipAnswer={handleSkipAnswer}
+          />
+        </>
       )}
     </>
   );
