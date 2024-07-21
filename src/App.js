@@ -12,12 +12,16 @@ function App() {
     setIsQuizStarted(true);
   }
 
+  function handleEndQuiz() {
+    setIsQuizStarted(false);
+  }
+
   return (
     <QuizSettingsContextProvider>
       <Header />
       <main>
         {!isQuizStarted && <Settings onStart={handleStartQuiz} />}
-        {isQuizStarted && <Quiz />}
+        {isQuizStarted && <Quiz onBackHome={handleEndQuiz} />}
       </main>
     </QuizSettingsContextProvider>
   );

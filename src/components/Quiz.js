@@ -1,24 +1,22 @@
 import { useContext, useEffect, useState, useCallback } from "react";
 import { QuizSettingsContext } from "../store/quiz-settings-context";
 import Question from "./Question";
+import QuizCompleted from "./QuizCompleted";
+import HomeButton from "./HomeButton";
 import "./Quiz.css";
 
-function Quiz() {
+function Quiz({ onBackHome }) {
+  const [isLoading, setIsLoading] = useState(false);
   const [userAnswers, setUserAnswers] = useState([]);
   const [questions, setQuestions] = useState(null);
+  const [quizIsComplete, setQuizIsComplete] = useState(false);
 
   const { settings } = useContext(QuizSettingsContext);
 
   const activeQuestionIndex = userAnswers.length;
 
-  let quizIsComplete = false;
-
-  if (questions && activeQuestionIndex === questions.length) {
-    quizIsComplete = true;
-  }
-
-  useEffect(() => {
-    console.log("FETCHING QUESTIONS");
+  async function fetchQuestions() {
+    setIsLoading(true);
     let apiUrl = `https://opentdb.com/api.php?amount=${settings.questionQuantity}`;
 
     if (settings.category !== "any") {
@@ -47,35 +45,44 @@ function Quiz() {
             };
           });
           setQuestions(questions);
+          setIsLoading(false);
         } else if (data.response_code === 5) {
           throw new Error("Too many requests. Try Later!");
         }
       })
       .catch((error) => console.error(error));
-  }, [settings]);
+  }
+
+  useEffect(() => {
+    if (!quizIsComplete) {
+      fetchQuestions();
+    }
+  }, [settings, quizIsComplete]);
 
   const handleSelectAnswer = useCallback(
     (selectedAnswer) => {
       setUserAnswers((prevAnswers) => [...prevAnswers, selectedAnswer]);
+
+      if (activeQuestionIndex === questions.length - 1) {
+        setQuizIsComplete(true);
+      }
     },
-    [activeQuestionIndex]
+    [activeQuestionIndex, questions]
   );
 
   const handleSkipAnswer = useCallback(() => {
     handleSelectAnswer(null);
   }, [handleSelectAnswer]);
 
-  if (quizIsComplete) {
-    return (
-      <div>
-        <h2>Quiz is completed</h2>
-      </div>
-    );
+  function handleGenerateNewQuestions() {
+    setQuizIsComplete(false);
+    setUserAnswers([]);
   }
 
   return (
     <>
-      {questions && (
+      {isLoading && <p>Loading...</p>}
+      {!isLoading && questions && !quizIsComplete && (
         <>
           <div>
             Question {activeQuestionIndex + 1} of {questions.length}
@@ -87,7 +94,16 @@ function Quiz() {
             onSelectAnswer={handleSelectAnswer}
             onSkipAnswer={handleSkipAnswer}
           />
+          <HomeButton onBackHome={onBackHome}>End Quiz</HomeButton>
         </>
+      )}
+      {quizIsComplete && (
+        <QuizCompleted
+          userAnswers={userAnswers}
+          questions={questions}
+          onGenerateNewQuestions={handleGenerateNewQuestions}
+          onBackHome={onBackHome}
+        />
       )}
     </>
   );
