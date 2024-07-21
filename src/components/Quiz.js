@@ -6,7 +6,6 @@ import "./Quiz.css";
 function Quiz() {
   const [userAnswers, setUserAnswers] = useState([]);
   const [questions, setQuestions] = useState(null);
-  // const [answerState, setAnswerState] = useState("");
 
   const { settings } = useContext(QuizSettingsContext);
 

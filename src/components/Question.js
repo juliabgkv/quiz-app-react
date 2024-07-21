@@ -8,6 +8,25 @@ function Question({ questionIndex, questions, onSelectAnswer, onSkipAnswer }) {
     isCorrect: null,
   });
 
+  
+  let answerState = "";
+
+  if (answer.selectedAnswer && answer.isCorrect !== null) {
+    answerState = answer.isCorrect ? "correct" : "wrong";
+  } else if (answer.selectedAnswer) {
+    answerState = "answered";
+  }
+
+  let timer = 10000;
+
+  if (answerState.selectedAnswer) {
+    timer = 1000;
+  }
+
+  if (answer.isCorrect !== null) {
+    timer = 2000;
+  }
+
   function handleSelectAnswer(answer) {
     setAnswer({
       selectedAnswer: answer,
@@ -26,20 +45,12 @@ function Question({ questionIndex, questions, onSelectAnswer, onSkipAnswer }) {
     }, 1000);
   }
 
-  let answerState = "";
-
-  if (answer.selectedAnswer && answer.isCorrect !== null) {
-    answerState = answer.isCorrect ? "correct" : "wrong";
-  } else if (answer.selectedAnswer) {
-    answerState = "answered";
-  }
-
   return (
     <div>
       <QuestionTimer
-        timeout={10000}
-        onTimeout={onSkipAnswer}
-        answerState={answerState}
+        key={timer}
+        timeout={timer}
+        onTimeout={answer.selectedAnswer === "" ? onSkipAnswer : null}
       />
       <h2>{questions[questionIndex].question}</h2>
       <Answers
