@@ -28,8 +28,8 @@ function Answers({ answers, selectedAnswer, answerState, onSelect }) {
               onClick={() => onSelect(answer)}
               className={cssClass}
               disabled={answerState !== ""}
+              dangerouslySetInnerHTML={{ __html: answer }}
             >
-              {answer}
             </button>
           </li>
         );
