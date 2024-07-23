@@ -19,22 +19,21 @@ function Quiz({ onBackHome }) {
     setIsLoading(true);
     let apiUrl = `https://opentdb.com/api.php?amount=${settings.questionQuantity}`;
 
-    if (settings.category !== "any") {
-      apiUrl = apiUrl.concat(`&category=${settings.category}`);
+    if (settings.category.id !== "any") {
+      apiUrl = apiUrl.concat(`&category=${settings.category.id}`);
     }
 
-    if (settings.difficulty !== "any") {
-      apiUrl = apiUrl.concat(`&difficulty=${settings.difficulty}`);
+    if (settings.difficulty.id !== "any") {
+      apiUrl = apiUrl.concat(`&difficulty=${settings.difficulty.id}`);
     }
 
-    if (settings.type !== "any") {
-      apiUrl = apiUrl.concat(`&type=${settings.type}`);
+    if (settings.type.id !== "any") {
+      apiUrl = apiUrl.concat(`&type=${settings.type.id}`);
     }
 
     fetch(apiUrl)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         if (data.response_code === 0) {
           const questions = data.results.map((question) => {
             return {
@@ -87,6 +86,8 @@ function Quiz({ onBackHome }) {
           <div>
             Question {activeQuestionIndex + 1} of {questions.length}
           </div>
+          <div>Category: {settings.category.name}</div>
+          <div>Difficulty: {settings.difficulty.name}</div>
           <Question
             key={activeQuestionIndex}
             questionIndex={activeQuestionIndex}

@@ -1,10 +1,10 @@
 import { createContext, useReducer } from "react";
-import { DIFFICULTIES, TYPES } from "../quiz-settings-options";
+import { DEFAULT_CATEGORY, DIFFICULTIES, TYPES } from "../quiz-settings-options";
 
 const INIT_SETTINGS = {
-  category: "any",
-  difficulty: DIFFICULTIES[0].id,
-  type: TYPES[0].id,
+  category: DEFAULT_CATEGORY,
+  difficulty: DIFFICULTIES[0],
+  type: TYPES[0],
   questionQuantity: 10,
 };
 

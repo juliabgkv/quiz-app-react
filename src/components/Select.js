@@ -1,13 +1,17 @@
 function Select({ title, options, selectedOption, onChange }) {
+  function handleOnChange(e) {
+    onChange(JSON.parse(e.target.value));
+  }
+
   return (
     <div>
       <h3>{title}</h3>
-      <select value={selectedOption} onChange={(e) => onChange(e.currentTarget.value)}>
-        {options.map((option) => (
-          <option key={option.id} value={option.id}>
+      <select value={selectedOption} onChange={handleOnChange}>
+        {options.map((option) => {
+          return <option key={option.name} value={JSON.stringify(option)}>
             {option.name}
-          </option>
-        ))}
+          </option>;
+        })}
       </select>
     </div>
   );

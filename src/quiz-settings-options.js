@@ -1,3 +1,5 @@
+export const DEFAULT_CATEGORY = { id: "any", name: "Any Category" };
+
 export const DIFFICULTIES = [
   { id: "any", name: "Any Difficulty" },
   { id: "easy", name: "Easy" },

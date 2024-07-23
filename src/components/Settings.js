@@ -1,7 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import Select from "./Select";
 import { QuizSettingsContext } from "../store/quiz-settings-context";
-import { DIFFICULTIES, TYPES } from "../quiz-settings-options";
+import {
+  DEFAULT_CATEGORY,
+  DIFFICULTIES,
+  TYPES,
+} from "../quiz-settings-options";
 
 function Settings({ onStart }) {
   const [loading, setLoading] = useState(true);
@@ -18,10 +22,9 @@ function Settings({ onStart }) {
     fetch("https://opentdb.com/api_category.php")
       .then((res) => res.json())
       .then((data) => {
-        setCategories([
-          { id: "any", name: "Any Category" },
-          ...data.trivia_categories,
-        ]);
+        const categories = [DEFAULT_CATEGORY, ...data.trivia_categories];
+
+        setCategories(categories);
         setLoading(false);
       });
   }, []);
@@ -34,20 +37,20 @@ function Settings({ onStart }) {
             <Select
               title="Select Category:"
               options={categories}
-              selectedOption={settings.category}
+              selectedOption={JSON.stringify(settings.category)}
               onChange={changeCategory}
             />
           )}
           <Select
             title="Select Difficulty:"
             options={DIFFICULTIES}
-            selectedOption={settings.difficulty}
+            selectedOption={JSON.stringify(settings.difficulty)}
             onChange={changeDifficulty}
           />
           <Select
             title="Select Type:"
             options={TYPES}
-            selectedOption={settings.type}
+            selectedOption={JSON.stringify(settings.type)}
             onChange={changeType}
           />
           <div>
