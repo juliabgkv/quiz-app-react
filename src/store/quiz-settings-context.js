@@ -1,11 +1,25 @@
 import { createContext, useReducer } from "react";
-import { DEFAULT_CATEGORY, DIFFICULTIES, TYPES } from "../quiz-settings-options";
+import {
+  DEFAULT_CATEGORY,
+  DIFFICULTIES,
+  TIMERS,
+  TYPES,
+} from "../quiz-settings-options";
+
+const SETTINGS_TITLES = {
+  CATEGORY: "CATEGORY",
+  DIFFICULTY: "DIFFICULTY",
+  TYPE: "TYPE",
+  QUANTITY: "QUANTITY",
+  TIMER: "TIMER"
+};
 
 const INIT_SETTINGS = {
   category: DEFAULT_CATEGORY,
   difficulty: DIFFICULTIES[0],
   type: TYPES[0],
   questionQuantity: 10,
+  timer: TIMERS[0],
 };
 
 export const QuizSettingsContext = createContext({
@@ -14,32 +28,40 @@ export const QuizSettingsContext = createContext({
   changeDifficulty: () => {},
   changeType: () => {},
   changeQuestionsQuantity: () => {},
+  handleChangeTimer: () => {}
 });
 
 function settingsReducer(state, action) {
   switch (action.type) {
-    case "CATEGORY": {
+    case SETTINGS_TITLES.CATEGORY: {
       return {
         ...state,
         category: action.payload,
       };
     }
-    case "DIFFICULTY": {
+    case SETTINGS_TITLES.DIFFICULTY: {
       return {
         ...state,
         difficulty: action.payload,
       };
     }
-    case "TYPE": {
+    case SETTINGS_TITLES.TYPE: {
       return {
         ...state,
         type: action.payload,
       };
     }
-    case "QUANTITY": {
+    case SETTINGS_TITLES.QUANTITY: {
       return {
         ...state,
         questionQuantity: action.payload,
+      };
+    }
+    case SETTINGS_TITLES.TIMER: {
+      console.log(action.payload);
+      return {
+        ...state,
+        time: action.payload,
       };
     }
     default: {
@@ -72,13 +94,22 @@ export default function QuizSettingsContextProvider({ children }) {
     settingsDispatch({
       type: "TYPE",
       payload: type,
-    });}
+    });
+  }
 
   function handleChangeQuestionsQuantity(quantity) {
     settingsDispatch({
       type: "QUANTITY",
       payload: quantity,
-    });}
+    });
+  }
+
+  function handleChangeTimer(time) {
+    settingsDispatch({
+      type: "TIMER",
+      payload: time,
+    });
+  }
 
   const ctxValue = {
     settings: settingsState,
@@ -86,6 +117,7 @@ export default function QuizSettingsContextProvider({ children }) {
     changeDifficulty: handleChangeDifficulty,
     changeType: handleChangeType,
     changeQuestionsQuantity: handleChangeQuestionsQuantity,
+    changeTimer: handleChangeTimer
   };
 
   return (

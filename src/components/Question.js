@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { QuizSettingsContext } from "../store/quiz-settings-context";
 import Answers from "./Answers";
 import QuestionTimer from "./QuestionTimer";
 
@@ -8,7 +9,8 @@ function Question({ questionIndex, questions, onSelectAnswer, onSkipAnswer }) {
     isCorrect: null,
   });
 
-  
+  const { settings } = useContext(QuizSettingsContext);
+
   let answerState = "";
 
   if (answer.selectedAnswer && answer.isCorrect !== null) {
@@ -17,7 +19,7 @@ function Question({ questionIndex, questions, onSelectAnswer, onSkipAnswer }) {
     answerState = "answered";
   }
 
-  let timer = 10000;
+  let timer = settings.time * 1000;
 
   if (answerState.selectedAnswer) {
     timer = 1000;
@@ -47,12 +49,17 @@ function Question({ questionIndex, questions, onSelectAnswer, onSkipAnswer }) {
 
   return (
     <div>
-      <QuestionTimer
-        key={timer}
-        timeout={timer}
-        onTimeout={answer.selectedAnswer === "" ? onSkipAnswer : null}
-      />
-      <h2 dangerouslySetInnerHTML={{__html:questions[questionIndex].question}}></h2>
+      {settings.time > 0 && 
+        <QuestionTimer
+          key={timer}
+          timeout={timer}
+          onTimeout={answer.selectedAnswer === "" ? onSkipAnswer : null}
+          mode={answerState}
+        />
+      }
+      <h2
+        dangerouslySetInnerHTML={{ __html: questions[questionIndex].question }}
+      ></h2>
       <Answers
         answers={questions[questionIndex].answers}
         selectedAnswer={answer.selectedAnswer}

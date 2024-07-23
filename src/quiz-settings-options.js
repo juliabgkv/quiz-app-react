@@ -12,3 +12,5 @@ export const TYPES = [
   { id: "multiple", name: "Multiple Choice" },
   { id: "boolean", name: "True / False" },
 ];
+
+export const TIMERS = [0, 10, 15, 20, 30];
