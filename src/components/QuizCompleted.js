@@ -44,7 +44,7 @@ function QuizCompleted({ userAnswers, questions, onGenerateNewQuestions, onBackH
         </div>
       </div>
       <button onClick={onGenerateNewQuestions}>Generate New Questions</button>
-      <HomeButton onClick={onBackHome}>Home</HomeButton>
+      <HomeButton onBackHome={onBackHome}>Home</HomeButton>
       <ol>
         {questions.map((question, index) => {
           const isCorrectAnswer =
