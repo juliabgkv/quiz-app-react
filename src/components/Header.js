@@ -1,7 +1,7 @@
 function Header() {
   return (
     <header>
-      <h1>React Quiz</h1>
+      <h1>Trivia Quiz</h1>
     </header>
   );
 }
