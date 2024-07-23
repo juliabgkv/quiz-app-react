@@ -52,7 +52,7 @@ function Question({ questionIndex, questions, onSelectAnswer, onSkipAnswer }) {
         timeout={timer}
         onTimeout={answer.selectedAnswer === "" ? onSkipAnswer : null}
       />
-      <h2>{questions[questionIndex].question}</h2>
+      <h2 dangerouslySetInnerHTML={{__html:questions[questionIndex].question}}></h2>
       <Answers
         answers={questions[questionIndex].answers}
         selectedAnswer={answer.selectedAnswer}
