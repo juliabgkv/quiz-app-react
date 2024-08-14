@@ -58,10 +58,9 @@ function settingsReducer(state, action) {
       };
     }
     case SETTINGS_TITLES.TIMER: {
-      console.log(action.payload);
       return {
         ...state,
-        time: action.payload,
+        timer: action.payload,
       };
     }
     default: {

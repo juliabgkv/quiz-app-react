@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { Button, Stack, Typography } from "@mui/material";
 
 function Answers({ answers, selectedAnswer, answerState, onSelect }) {
   const shuffeledAnswers = useRef();
@@ -9,32 +10,34 @@ function Answers({ answers, selectedAnswer, answerState, onSelect }) {
   }
 
   return (
-    <ul>
+    <Stack spacing={1}>
       {shuffeledAnswers.current.map((answer) => {
         const isSelected = selectedAnswer === answer;
-        let cssClass = "";
+        let bgColor = "";
 
-        if (answerState === "answered" && isSelected) cssClass = "selected";
-        if (
-          (answerState === "correct" || answerState === "wrong") &&
-          isSelected
-        ) {
-          cssClass = answerState;
+        if (isSelected) {
+          if (answerState === "answered") bgColor = "#FEAC38";
+          if (answerState === "correct") bgColor = "#7B8333";
+          if (answerState === "wrong") bgColor = "#90090C";
         }
 
         return (
-          <li key={answer}>
-            <button
-              onClick={() => onSelect(answer)}
-              className={cssClass}
-              disabled={answerState !== ""}
+          <Button
+            key={answer}
+            fullWidth
+            variant="outlined"
+            onClick={() => onSelect(answer)}
+            disabled={answerState !== ""}
+            sx={{ backgroundColor: bgColor }}
+          >
+            <Typography
+              sx={{ m: 1, color: "white" }}
               dangerouslySetInnerHTML={{ __html: answer }}
-            >
-            </button>
-          </li>
+            ></Typography>
+          </Button>
         );
       })}
-    </ul>
+    </Stack>
   );
 }
 

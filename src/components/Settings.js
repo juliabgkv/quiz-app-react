@@ -1,12 +1,22 @@
 import { useContext, useEffect, useState } from "react";
-import Select from "./Select";
-import { QuizSettingsContext } from "../store/quiz-settings-context";
+import {
+  Box,
+  Button,
+  FormGroup,
+  FormLabel,
+  Input,
+  MenuItem,
+  Select,
+} from "@mui/material";
 import {
   DEFAULT_CATEGORY,
   DIFFICULTIES,
   TIMERS,
   TYPES,
 } from "../quiz-settings-options";
+import SelectOption from "./SelectOption";
+import { QuizSettingsContext } from "../store/quiz-settings-context";
+import LoadingSpinner from "./LoadingSpinner";
 
 function Settings({ onStart }) {
   const [loading, setLoading] = useState(true);
@@ -34,50 +44,63 @@ function Settings({ onStart }) {
   return (
     <>
       {!loading && (
-        <div>
+        <Box>
           {categories && (
-            <Select
+            <SelectOption
               title="Select Category:"
               options={categories}
               selectedOption={JSON.stringify(settings.category)}
               onChange={changeCategory}
             />
           )}
-          <Select
+          <SelectOption
             title="Select Difficulty:"
             options={DIFFICULTIES}
             selectedOption={JSON.stringify(settings.difficulty)}
             onChange={changeDifficulty}
           />
-          <Select
+          <SelectOption
             title="Select Type:"
             options={TYPES}
             selectedOption={JSON.stringify(settings.type)}
             onChange={changeType}
           />
-          <div>
-            <h2>Number of Questions:</h2>
-            <input
+          <FormGroup sx={{ mb: "1rem" }}>
+            <FormLabel id="questions-quantity">Number of Questions:</FormLabel>
+            <Input
               type="number"
               value={settings.questionQuantity}
               min="1"
               max="50"
               onChange={(e) => changeQuestionsQuantity(e.target.value)}
             />
-          </div>
-          <div>
-            <h4>Timer (in seconds):</h4>
-            <select value={settings.time} onChange={(e) => changeTimer(+e.target.value)}>
+          </FormGroup>
+          <FormGroup sx={{ mb: "1rem" }}>
+            <FormLabel id="timer">Timer (in seconds):</FormLabel>
+            <Select
+              labelId="timer"
+              value={settings.timer}
+              onChange={(e) => changeTimer(e.target.value)}
+            >
               {TIMERS.map((timer) => (
-                <option key={`timer-${timer}`} value={timer}>
+                <MenuItem key={`timer-${timer}`} value={timer}>
                   {timer > 0 ? timer : "No Timer"}
-                </option>
+                </MenuItem>
               ))}
-            </select>
-          </div>
-          <button onClick={onStart}>Start Quiz</button>
-        </div>
+            </Select>
+          </FormGroup>
+          <Button
+            variant="contained"
+            sx={{ p: "15px" }}
+            fullWidth
+            type="submit"
+            onClick={onStart}
+          >
+            Start Quiz
+          </Button>
+        </Box>
       )}
+      {loading && <LoadingSpinner />}
     </>
   );
 }

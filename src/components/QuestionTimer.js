@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "./QuestionTimer.module.css";
+import { Box, LinearProgress,linearProgressClasses, Typography } from "@mui/material";
 
 function QuestionTimer({ timeout, onTimeout, mode }) {
   const [remainingTime, setRemainingTime] = useState(timeout);
@@ -22,13 +22,33 @@ function QuestionTimer({ timeout, onTimeout, mode }) {
     };
   }, []);
 
-  console.log(mode);
+  const progress = Math.ceil((remainingTime / timeout) * 100);
+
+  let bgColor = "green";
+
+  if (mode === "wrong") bgColor = "#90090C";
+  if (mode === "correct") bgColor = "#7B8333";
 
   return (
-    <div>
-      <progress max={timeout} min="0" value={remainingTime} className={mode}/>
-      {timeout > 2000 && <div>{Math.ceil(remainingTime / 1000)} seconds left</div>}
-    </div>
+    <Box sx={{ mt: 2 }}>
+      <LinearProgress
+        value={progress}
+        variant="determinate"
+        sx={{
+          borderRadius: 5,
+          [`& .${linearProgressClasses.bar}`]: {
+            backgroundColor: bgColor
+          },
+        }}
+      />
+      <Box sx={{ height: 24, textAlign: "center" }}>
+        {timeout > 2000 && (
+          <Typography variant="caption" color="text.secondary">
+            {Math.ceil(remainingTime / 1000)} seconds left
+          </Typography>
+        )}
+      </Box>
+    </Box>
   );
 }
 

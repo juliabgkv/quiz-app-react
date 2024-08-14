@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { QuizSettingsContext } from "../store/quiz-settings-context";
 import Answers from "./Answers";
 import QuestionTimer from "./QuestionTimer";
+import { Box, Typography } from "@mui/material";
 
 function Question({ questionIndex, questions, onSelectAnswer, onSkipAnswer }) {
   const [answer, setAnswer] = useState({
@@ -19,7 +20,7 @@ function Question({ questionIndex, questions, onSelectAnswer, onSkipAnswer }) {
     answerState = "answered";
   }
 
-  let timer = settings.time * 1000;
+  let timer = settings.timer * 1000;
 
   if (answerState.selectedAnswer) {
     timer = 1000;
@@ -48,8 +49,18 @@ function Question({ questionIndex, questions, onSelectAnswer, onSkipAnswer }) {
   }
 
   return (
-    <div>
-      {settings.time > 0 && 
+    <Box>
+      <Typography variant="h4"
+        sx={{ my: 2 }}
+        dangerouslySetInnerHTML={{ __html: questions[questionIndex].question }}
+      ></Typography>
+      <Answers
+        answers={questions[questionIndex].answers}
+        selectedAnswer={answer.selectedAnswer}
+        answerState={answerState}
+        onSelect={handleSelectAnswer}
+      />
+      {settings.timer > 0 && 
         <QuestionTimer
           key={timer}
           timeout={timer}
@@ -57,16 +68,7 @@ function Question({ questionIndex, questions, onSelectAnswer, onSkipAnswer }) {
           mode={answerState}
         />
       }
-      <h2
-        dangerouslySetInnerHTML={{ __html: questions[questionIndex].question }}
-      ></h2>
-      <Answers
-        answers={questions[questionIndex].answers}
-        selectedAnswer={answer.selectedAnswer}
-        answerState={answerState}
-        onSelect={handleSelectAnswer}
-      />
-    </div>
+    </Box>
   );
 }
 

@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState, useCallback } from "react";
+import { Box, Typography } from "@mui/material";
 import { QuizSettingsContext } from "../store/quiz-settings-context";
 import Question from "./Question";
-import QuizCompleted from "./QuizCompleted";
+import QuizCompleted from "./QuizCompleted/QuizCompleted";
 import HomeButton from "./HomeButton";
-import "./Quiz.css";
+import LoadingSpinner from "./LoadingSpinner";
 
 function Quiz({ onBackHome }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -15,7 +16,7 @@ function Quiz({ onBackHome }) {
 
   const activeQuestionIndex = userAnswers.length;
 
-  async function fetchQuestions() {
+  const fetchQuestions = useCallback(async () => {
     setIsLoading(true);
     let apiUrl = `https://opentdb.com/api.php?amount=${settings.questionQuantity}`;
 
@@ -50,13 +51,13 @@ function Quiz({ onBackHome }) {
         }
       })
       .catch((error) => console.error(error));
-  }
+  }, [settings]);
 
   useEffect(() => {
     if (!quizIsComplete) {
       fetchQuestions();
     }
-  }, [settings, quizIsComplete]);
+  }, [quizIsComplete, fetchQuestions]);
 
   const handleSelectAnswer = useCallback(
     (selectedAnswer) => {
@@ -80,14 +81,27 @@ function Quiz({ onBackHome }) {
 
   return (
     <>
-      {isLoading && <p>Loading...</p>}
+      {isLoading && <LoadingSpinner />}
       {!isLoading && questions && !quizIsComplete && (
         <>
-          <div>
-            Question {activeQuestionIndex + 1} of {questions.length}
-          </div>
-          <div>Category: {settings.category.name}</div>
-          <div>Difficulty: {settings.difficulty.name}</div>
+          <Box
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Typography variant="h5">
+              Question {activeQuestionIndex + 1} of {questions.length}
+            </Typography>
+            <HomeButton onBackHome={onBackHome}>End Quiz</HomeButton>
+          </Box>
+          <Typography variant="subtitle2" color="text.secondary">
+            Category: {settings.category.name}
+          </Typography>
+          <Typography variant="subtitle2" color="text.secondary">
+            Difficulty: {settings.difficulty.name}
+          </Typography>
           <Question
             key={activeQuestionIndex}
             questionIndex={activeQuestionIndex}
@@ -95,7 +109,6 @@ function Quiz({ onBackHome }) {
             onSelectAnswer={handleSelectAnswer}
             onSkipAnswer={handleSkipAnswer}
           />
-          <HomeButton onBackHome={onBackHome}>End Quiz</HomeButton>
         </>
       )}
       {quizIsComplete && (
