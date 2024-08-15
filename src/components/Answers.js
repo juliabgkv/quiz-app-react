@@ -28,7 +28,7 @@ function Answers({ answers, selectedAnswer, answerState, onSelect }) {
             variant="outlined"
             onClick={() => onSelect(answer)}
             disabled={answerState !== ""}
-            sx={{ backgroundColor: bgColor }}
+            sx={{ backgroundColor: `${bgColor} !important` }}
           >
             <Typography
               sx={{ m: 1, color: "white" }}
