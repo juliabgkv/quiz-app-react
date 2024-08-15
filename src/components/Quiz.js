@@ -1,9 +1,8 @@
 import { useContext, useEffect, useState, useCallback } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { QuizSettingsContext } from "../store/quiz-settings-context";
 import Question from "./Question";
 import QuizCompleted from "./QuizCompleted/QuizCompleted";
-import HomeButton from "./HomeButton";
 import LoadingSpinner from "./LoadingSpinner";
 
 function Quiz({ onBackHome }) {
@@ -91,10 +90,10 @@ function Quiz({ onBackHome }) {
               alignItems: "center",
             }}
           >
-            <Typography variant="h5">
+            <Typography variant="h5" sx={{ fontSize: { xs: "1rem", sm: "1rem", md: "1.5rem" } }}>
               Question {activeQuestionIndex + 1} of {questions.length}
             </Typography>
-            <HomeButton onBackHome={onBackHome}>End Quiz</HomeButton>
+            <Button sx={{ fontSize: "0.8rem" }} onClick={onBackHome}>End Quiz</Button>
           </Box>
           <Typography variant="subtitle2" color="text.secondary">
             Category: {settings.category.name}

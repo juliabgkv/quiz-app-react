@@ -51,7 +51,7 @@ function Question({ questionIndex, questions, onSelectAnswer, onSkipAnswer }) {
   return (
     <Box>
       <Typography variant="h4"
-        sx={{ my: 2 }}
+        sx={{ my: 2, fontSize: { xs: "1.2rem", sm: "1.8rem", md: "2rem" } }}
         dangerouslySetInnerHTML={{ __html: questions[questionIndex].question }}
       ></Typography>
       <Answers
