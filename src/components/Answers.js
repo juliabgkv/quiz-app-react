@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { Button, Stack, Typography } from "@mui/material";
+import { answeredColor, primaryColor, wrongColor } from "./colors";
 
 function Answers({ answers, selectedAnswer, answerState, onSelect }) {
   const shuffeledAnswers = useRef();
@@ -16,9 +17,9 @@ function Answers({ answers, selectedAnswer, answerState, onSelect }) {
         let bgColor = "";
 
         if (isSelected) {
-          if (answerState === "answered") bgColor = "#FEAC38";
-          if (answerState === "correct") bgColor = "#7B8333";
-          if (answerState === "wrong") bgColor = "#90090C";
+          if (answerState === "answered") bgColor = answeredColor;
+          if (answerState === "correct") bgColor = primaryColor;
+          if (answerState === "wrong") bgColor = wrongColor;
         }
 
         return (
@@ -31,7 +32,7 @@ function Answers({ answers, selectedAnswer, answerState, onSelect }) {
             sx={{ backgroundColor: `${bgColor} !important` }}
           >
             <Typography
-              sx={{ m: 1, color: "white" }}
+              sx={{ m: 1, color: "text.primary" }}
               dangerouslySetInnerHTML={{ __html: answer }}
             ></Typography>
           </Button>

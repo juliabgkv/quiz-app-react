@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Box, LinearProgress,linearProgressClasses, Typography } from "@mui/material";
+import { primaryColor, wrongColor } from "./colors";
 
 function QuestionTimer({ timeout, onTimeout, mode }) {
   const [remainingTime, setRemainingTime] = useState(timeout);
@@ -24,10 +25,9 @@ function QuestionTimer({ timeout, onTimeout, mode }) {
 
   const progress = Math.ceil((remainingTime / timeout) * 100);
 
-  let bgColor = "green";
+  let bgColor = primaryColor;
 
-  if (mode === "wrong") bgColor = "#90090C";
-  if (mode === "correct") bgColor = "#7B8333";
+  if (mode === "wrong") bgColor = wrongColor;
 
   return (
     <Box sx={{ mt: 2 }}>
