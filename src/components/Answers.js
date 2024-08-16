@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { Button, Stack, Typography } from "@mui/material";
-import { answeredColor, primaryColor, wrongColor } from "./colors";
+import { answeredColor, primaryColor, wrongColor } from "../colors";
 
 function Answers({ answers, selectedAnswer, answerState, onSelect }) {
   const shuffeledAnswers = useRef();

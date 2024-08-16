@@ -10,9 +10,11 @@ function SelectOption({ title, options, selectedOption, onChange }) {
       <InputLabel id={title}>{title}</InputLabel>
       <Select labelId={title} value={selectedOption} onChange={handleOnChange}>
         {options.map((option) => {
-          return <MenuItem key={option.name} value={JSON.stringify(option)}>
-            {option.name}
-          </MenuItem>;
+          return (
+            <MenuItem key={option.name} value={JSON.stringify(option)}>
+              {option.name}
+            </MenuItem>
+          );
         })}
       </Select>
     </FormGroup>

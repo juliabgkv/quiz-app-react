@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
-import { Box, LinearProgress,linearProgressClasses, Typography } from "@mui/material";
-import { primaryColor, wrongColor } from "./colors";
+import {
+  Box,
+  LinearProgress,
+  linearProgressClasses,
+  Typography,
+} from "@mui/material";
+import { primaryColor, wrongColor } from "../colors";
 
 function QuestionTimer({ timeout, onTimeout, mode }) {
   const [remainingTime, setRemainingTime] = useState(timeout);
@@ -26,7 +31,6 @@ function QuestionTimer({ timeout, onTimeout, mode }) {
   const progress = Math.ceil((remainingTime / timeout) * 100);
 
   let bgColor = primaryColor;
-
   if (mode === "wrong") bgColor = wrongColor;
 
   return (
@@ -37,7 +41,7 @@ function QuestionTimer({ timeout, onTimeout, mode }) {
         sx={{
           borderRadius: 5,
           [`& .${linearProgressClasses.bar}`]: {
-            backgroundColor: bgColor
+            backgroundColor: bgColor,
           },
         }}
       />

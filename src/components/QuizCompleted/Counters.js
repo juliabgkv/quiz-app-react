@@ -1,4 +1,4 @@
-import {Stack } from "@mui/material";
+import { Stack } from "@mui/material";
 import { capitalize } from "../../utils";
 import CounterItem from "./CounterItem";
 
