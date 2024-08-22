@@ -1,12 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import {
+  Alert,
   Box,
   Button,
   FormGroup,
   FormLabel,
-  Input,
   MenuItem,
   Select,
+  TextField,
 } from "@mui/material";
 import {
   DEFAULT_CATEGORY,
@@ -21,6 +22,8 @@ import LoadingSpinner from "./LoadingSpinner";
 function Settings({ onStart }) {
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState(null);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [quantityError, setQuantityError] = useState("");
   const {
     settings,
     changeCategory,
@@ -41,8 +44,31 @@ function Settings({ onStart }) {
       });
   }, []);
 
+  function handleChangeQuestionsQuantity(e) {
+    if (!e.target.value) {
+      setQuantityError("Questions quantity can`t be empty");
+    } else if (e.target.value > 50 || e.target.value < 1) {
+      setQuantityError("Questions quantity must be between 1 and 50");
+    } else if (e.target.value <= 50 && e.target.value > 0) {
+      setQuantityError("");
+    }
+
+    changeQuestionsQuantity(e.target.value);
+  }
+
+  function handleOnClick() {
+    if (settings.questionQuantity <= 50 && settings.questionQuantity > 0) {
+      onStart();
+    } else {
+      setAlertMessage("Please, enter correct number of questions!");
+    }
+  }
+
   return (
     <>
+      {alertMessage !== "" && (
+        <Alert severity="error">{alertMessage}</Alert>
+      )}
       {!loading && (
         <Box>
           {categories && (
@@ -66,13 +92,17 @@ function Settings({ onStart }) {
             onChange={changeType}
           />
           <FormGroup sx={{ mb: "1rem" }}>
-            <FormLabel id="questions-quantity">Number of Questions:</FormLabel>
-            <Input
+            <FormLabel id="timer">Number of Questions:</FormLabel>
+            <TextField
+              variant="outlined"
               type="number"
-              value={settings.questionQuantity}
               min="1"
               max="50"
-              onChange={(e) => changeQuestionsQuantity(e.target.value)}
+              value={settings.questionQuantity}
+              onChange={handleChangeQuestionsQuantity}
+              error={quantityError.length > 0}
+              helperText={quantityError}
+              fullWidth
             />
           </FormGroup>
           <FormGroup sx={{ mb: "1rem" }}>
@@ -94,7 +124,7 @@ function Settings({ onStart }) {
             sx={{ p: "15px" }}
             fullWidth
             type="submit"
-            onClick={onStart}
+            onClick={handleOnClick}
           >
             Start Quiz
           </Button>
