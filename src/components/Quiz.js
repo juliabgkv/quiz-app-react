@@ -27,10 +27,6 @@ function Quiz({ onBackHome }) {
       apiUrl = apiUrl.concat(`&difficulty=${settings.difficulty.id}`);
     }
 
-    if (settings.type.id !== "any") {
-      apiUrl = apiUrl.concat(`&type=${settings.type.id}`);
-    }
-
     fetch(apiUrl)
       .then((response) => response.json())
       .then((data) => {
@@ -47,6 +43,8 @@ function Quiz({ onBackHome }) {
           setIsLoading(false);
         } else if (data.response_code === 5) {
           throw new Error("Too many requests. Try Later!");
+        } else {
+          console.log(data.response_code);
         }
       })
       .catch((error) => console.error(error));

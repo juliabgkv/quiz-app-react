@@ -3,13 +3,11 @@ import {
   DEFAULT_CATEGORY,
   DIFFICULTIES,
   TIMERS,
-  TYPES,
 } from "../quiz-settings-options";
 
 const SETTINGS_TITLES = {
   CATEGORY: "CATEGORY",
   DIFFICULTY: "DIFFICULTY",
-  TYPE: "TYPE",
   QUANTITY: "QUANTITY",
   TIMER: "TIMER"
 };
@@ -17,7 +15,6 @@ const SETTINGS_TITLES = {
 const INIT_SETTINGS = {
   category: DEFAULT_CATEGORY,
   difficulty: DIFFICULTIES[0],
-  type: TYPES[0],
   questionQuantity: 10,
   timer: TIMERS[0],
 };
@@ -26,9 +23,8 @@ export const QuizSettingsContext = createContext({
   settings: null,
   changeCategory: () => {},
   changeDifficulty: () => {},
-  changeType: () => {},
   changeQuestionsQuantity: () => {},
-  handleChangeTimer: () => {}
+  changeTimer: () => {}
 });
 
 function settingsReducer(state, action) {
@@ -43,12 +39,6 @@ function settingsReducer(state, action) {
       return {
         ...state,
         difficulty: action.payload,
-      };
-    }
-    case SETTINGS_TITLES.TYPE: {
-      return {
-        ...state,
-        type: action.payload,
       };
     }
     case SETTINGS_TITLES.QUANTITY: {
@@ -89,13 +79,6 @@ export default function QuizSettingsContextProvider({ children }) {
     });
   }
 
-  function handleChangeType(type) {
-    settingsDispatch({
-      type: "TYPE",
-      payload: type,
-    });
-  }
-
   function handleChangeQuestionsQuantity(quantity) {
     settingsDispatch({
       type: "QUANTITY",
@@ -114,7 +97,6 @@ export default function QuizSettingsContextProvider({ children }) {
     settings: settingsState,
     changeCategory: handleChangeCategory,
     changeDifficulty: handleChangeDifficulty,
-    changeType: handleChangeType,
     changeQuestionsQuantity: handleChangeQuestionsQuantity,
     changeTimer: handleChangeTimer
   };

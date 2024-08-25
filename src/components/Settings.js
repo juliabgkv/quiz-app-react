@@ -13,22 +13,24 @@ import {
   DEFAULT_CATEGORY,
   DIFFICULTIES,
   TIMERS,
-  TYPES,
 } from "../quiz-settings-options";
 import SelectOption from "./SelectOption";
 import { QuizSettingsContext } from "../store/quiz-settings-context";
 import LoadingSpinner from "./LoadingSpinner";
 
+const DEFAULT_QUESTIONS_COUT = 50;
+
 function Settings({ onStart }) {
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState(null);
   const [alertMessage, setAlertMessage] = useState("");
-  const [quantityError, setQuantityError] = useState("");
+  const [quantityMaxCount, setQuantityMaxCount] = useState(
+    DEFAULT_QUESTIONS_COUT
+  );
   const {
     settings,
     changeCategory,
     changeDifficulty,
-    changeType,
     changeQuestionsQuantity,
     changeTimer,
   } = useContext(QuizSettingsContext);
@@ -44,31 +46,60 @@ function Settings({ onStart }) {
       });
   }, []);
 
-  function handleChangeQuestionsQuantity(e) {
-    if (!e.target.value) {
-      setQuantityError("Questions quantity can`t be empty");
-    } else if (e.target.value > 50 || e.target.value < 1) {
-      setQuantityError("Questions quantity must be between 1 and 50");
-    } else if (e.target.value <= 50 && e.target.value > 0) {
-      setQuantityError("");
-    }
-
-    changeQuestionsQuantity(e.target.value);
+  function handleChangeCategory(category) {
+    changeCategory(category);
+    setAlertMessage("");
+    setQuantityMaxCount(DEFAULT_QUESTIONS_COUT);
   }
 
-  function handleOnClick() {
-    if (settings.questionQuantity <= 50 && settings.questionQuantity > 0) {
-      onStart();
+  function handleChangeDifficulty(difficulty) {
+    changeDifficulty(difficulty);
+    setAlertMessage("");
+    setQuantityMaxCount(DEFAULT_QUESTIONS_COUT);
+  }
+
+  function handleOnStart() {
+    if (settings.category.id !== "any") {
+      fetch(
+        `https://opentdb.com/api_count.php?category=${settings.category.id}`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          if (settings.difficulty.id === "any") {
+            return data.category_question_count[`total_question_count`];
+          } else {
+            return data.category_question_count[
+              `total_${settings.difficulty.id}_question_count`
+            ];
+          }
+        })
+        .then((count) => {
+          if (
+            settings.questionQuantity <= count &&
+            settings.questionQuantity > 0
+          ) {
+            onStart();
+          } else {
+            setQuantityMaxCount(count);
+            setAlertMessage("Please, enter correct number of questions!");
+          }
+        });
     } else {
-      setAlertMessage("Please, enter correct number of questions!");
+      if (settings.questionQuantity <= 50 && settings.questionQuantity > 0) {
+        onStart();
+      } else {
+        setAlertMessage("Please, enter correct number of questions!");
+      }
     }
   }
+
+  const isQuantityError =
+    quantityMaxCount < settings.questionQuantity ||
+    settings.questionQuantity < 1;
 
   return (
     <>
-      {alertMessage !== "" && (
-        <Alert severity="error">{alertMessage}</Alert>
-      )}
+      {alertMessage !== "" && <Alert severity="error">{alertMessage}</Alert>}
       {!loading && (
         <Box>
           {categories && (
@@ -76,20 +107,14 @@ function Settings({ onStart }) {
               title="Select Category:"
               options={categories}
               selectedOption={JSON.stringify(settings.category)}
-              onChange={changeCategory}
+              onChange={handleChangeCategory}
             />
           )}
           <SelectOption
             title="Select Difficulty:"
             options={DIFFICULTIES}
             selectedOption={JSON.stringify(settings.difficulty)}
-            onChange={changeDifficulty}
-          />
-          <SelectOption
-            title="Select Type:"
-            options={TYPES}
-            selectedOption={JSON.stringify(settings.type)}
-            onChange={changeType}
+            onChange={handleChangeDifficulty}
           />
           <FormGroup sx={{ mb: "1rem" }}>
             <FormLabel id="timer">Number of Questions:</FormLabel>
@@ -97,11 +122,14 @@ function Settings({ onStart }) {
               variant="outlined"
               type="number"
               min="1"
-              max="50"
+              max={quantityMaxCount}
               value={settings.questionQuantity}
-              onChange={handleChangeQuestionsQuantity}
-              error={quantityError.length > 0}
-              helperText={quantityError}
+              onChange={(e) => changeQuestionsQuantity(e.target.value)}
+              error={isQuantityError}
+              helperText={
+                isQuantityError &&
+                `Questions quantity must be between 1 and ${quantityMaxCount}`
+              }
               fullWidth
             />
           </FormGroup>
@@ -124,7 +152,7 @@ function Settings({ onStart }) {
             sx={{ p: "15px" }}
             fullWidth
             type="submit"
-            onClick={handleOnClick}
+            onClick={handleOnStart}
           >
             Start Quiz
           </Button>
