@@ -20,7 +20,7 @@ function Header({ onToggleTheme }) {
           fontWeight: "bold",
           textAlign: "center",
           backgroundImage:
-            "-webkit-linear-gradient(0deg, #51ad4b 23%, #e2f230 90%)",
+            "-webkit-linear-gradient(0deg, #51ad4b 23%, #c1cf2a 90%)",
           WebkitBackgroundClip: "text",
           WebkitTextFillColor: "transparent",
         }}

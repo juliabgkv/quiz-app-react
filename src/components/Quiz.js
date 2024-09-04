@@ -4,6 +4,7 @@ import { QuizSettingsContext } from "../store/quiz-settings-context";
 import Question from "./Question";
 import QuizCompleted from "./QuizCompleted/QuizCompleted";
 import LoadingSpinner from "./LoadingSpinner";
+import TryAgainButton from "./TryAgainButton";
 
 function Quiz({ onBackHome }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -42,9 +43,8 @@ function Quiz({ onBackHome }) {
           setQuestions(questions);
           setIsLoading(false);
         } else if (data.response_code === 5) {
-          throw new Error("Too many requests. Try Later!");
-        } else {
-          console.log(data.response_code);
+          setQuestions(undefined);
+          setIsLoading(false);
         }
       })
       .catch((error) => console.error(error));
@@ -74,6 +74,41 @@ function Quiz({ onBackHome }) {
   function handleGenerateNewQuestions() {
     setQuizIsComplete(false);
     setUserAnswers([]);
+  }
+
+  function handleTryAgain() {
+    
+    setIsLoading(true);
+    let apiUrl = `https://opentdb.com/api.php?amount=${settings.questionQuantity}`;
+
+    if (settings.category.id !== "any") {
+      apiUrl = apiUrl.concat(`&category=${settings.category.id}`);
+    }
+
+    if (settings.difficulty.id !== "any") {
+      apiUrl = apiUrl.concat(`&difficulty=${settings.difficulty.id}`);
+    }
+
+    fetch(apiUrl)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.response_code === 0) {
+          const questions = data.results.map((question) => {
+            return {
+              category: question.category,
+              difficulty: question.difficulty,
+              question: question.question,
+              answers: [question.correct_answer, ...question.incorrect_answers],
+            };
+          });
+          setQuestions(questions);
+          setIsLoading(false);
+        } else if (data.response_code === 5) {
+          setQuestions(undefined);
+          setIsLoading(false);
+        }
+      })
+      .catch((error) => console.error(error));
   }
 
   return (
@@ -116,6 +151,7 @@ function Quiz({ onBackHome }) {
           onBackHome={onBackHome}
         />
       )}
+      {!isLoading && questions === undefined && <TryAgainButton onTryAgain={handleTryAgain} />}
     </>
   );
 }
