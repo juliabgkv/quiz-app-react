@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import Settings from "./components/Settings";
 import Quiz from "./components/Quiz";
@@ -29,9 +29,15 @@ const darkTheme = createTheme({
   },
 });
 
+const theme = JSON.parse(localStorage.getItem("quizIsDarkTheme")) || false;
+
 function App() {
   const [isQuizStarted, setIsQuizStarted] = useState(false);
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
+  const [isDarkTheme, setIsDarkTheme] = useState(theme);
+
+  useEffect(() => {
+    localStorage.setItem("quizIsDarkTheme", isDarkTheme);
+  }, [isDarkTheme]);
 
   function handleStartQuiz() {
     setIsQuizStarted(true);
