@@ -1,6 +1,6 @@
 import { Box, FormControlLabel, Switch, Typography } from "@mui/material";
 
-function Header({ onToggleTheme }) {
+function Header({ isDarkTheme, onToggleTheme }) {
   return (
     <Box
       component="header"
@@ -30,7 +30,7 @@ function Header({ onToggleTheme }) {
       <FormControlLabel
         sx={{ fontSize: "0.8rem", color: "text.secondary", mt: 2 }}
         control={
-          <Switch size="small" onChange={onToggleTheme} sx={{ mr: 1 }}></Switch>
+          <Switch size="small" sx={{ mr: 1 }} onChange={onToggleTheme} checked={isDarkTheme} ></Switch>
         }
         label="Dark Theme"
       />

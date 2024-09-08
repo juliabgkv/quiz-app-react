@@ -55,7 +55,7 @@ function App() {
     <QuizSettingsContextProvider>
       <ThemeProvider theme={isDarkTheme ? darkTheme : lightTheme}>
         <CssBaseline />
-        <Header onToggleTheme={handleToggleTheme} />
+        <Header isDarkTheme={isDarkTheme} onToggleTheme={handleToggleTheme} />
         <Paper
           sx={{
             mx: "auto",
