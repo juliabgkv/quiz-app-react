@@ -3,7 +3,7 @@ import {
   DEFAULT_CATEGORY,
   DIFFICULTIES,
   TIMERS,
-} from "../quiz-settings-options";
+} from "../helpers/quiz-settings-options";
 
 const SETTINGS_TITLES = {
   CATEGORY: "CATEGORY",

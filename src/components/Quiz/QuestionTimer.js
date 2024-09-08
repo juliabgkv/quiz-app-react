@@ -5,7 +5,7 @@ import {
   linearProgressClasses,
   Typography,
 } from "@mui/material";
-import { primaryColor, wrongColor } from "../colors";
+import { primaryColor, wrongColor } from "../../helpers/colors";
 
 function QuestionTimer({ timeout, onTimeout, mode }) {
   const [remainingTime, setRemainingTime] = useState(timeout);

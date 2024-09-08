@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import Header from "./components/Header";
-import Settings from "./components/Settings";
-import Quiz from "./components/Quiz";
 import QuizSettingsContextProvider from "./store/quiz-settings-context";
 import { createTheme, CssBaseline, Paper, ThemeProvider } from "@mui/material";
+import Header from "./components/Header";
+import Settings from "./components/Settings/Settings";
+import Quiz from "./components/Quiz/Quiz";
 
 const lightTheme = createTheme({
   palette: {

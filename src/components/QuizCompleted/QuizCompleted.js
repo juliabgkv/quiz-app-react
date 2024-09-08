@@ -1,9 +1,9 @@
+import { useContext } from "react";
 import { Box } from "@mui/material";
+import { QuizSettingsContext } from "../../store/quiz-settings-context";
 import RightAnswers from "./RightAnswers";
 import Counters from "./Counters";
 import QuizCompletedButtons from "./QuizCompletedButtons";
-import { useContext } from "react";
-import { QuizSettingsContext } from "../../store/quiz-settings-context";
 import QuizCompletedHeader from "./QuizCompletedHeader";
 
 function QuizCompleted({

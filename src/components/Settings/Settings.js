@@ -1,22 +1,15 @@
 import { useContext, useEffect, useState } from "react";
-import {
-  Alert,
-  Box,
-  Button,
-  FormGroup,
-  FormLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from "@mui/material";
+import { Alert, Box, Button } from "@mui/material";
 import {
   DEFAULT_CATEGORY,
   DIFFICULTIES,
   TIMERS,
-} from "../quiz-settings-options";
+} from "../../helpers/quiz-settings-options";
 import SelectOption from "./SelectOption";
-import { QuizSettingsContext } from "../store/quiz-settings-context";
-import LoadingSpinner from "./LoadingSpinner";
+import { QuizSettingsContext } from "../../store/quiz-settings-context";
+import LoadingSpinner from "../LoadingSpinner";
+import QuestionNumberInput from "./QuestionNumberInput";
+import { API_URL } from "../../helpers/api";
 
 const DEFAULT_QUESTIONS_COUT = 50;
 
@@ -27,16 +20,11 @@ function Settings({ onStart }) {
   const [quantityMaxCount, setQuantityMaxCount] = useState(
     DEFAULT_QUESTIONS_COUT
   );
-  const {
-    settings,
-    changeCategory,
-    changeDifficulty,
-    changeQuestionsQuantity,
-    changeTimer,
-  } = useContext(QuizSettingsContext);
+  const { settings, changeCategory, changeDifficulty, changeTimer } =
+    useContext(QuizSettingsContext);
 
   useEffect(() => {
-    fetch("https://opentdb.com/api_category.php")
+    fetch(`${API_URL}api_category.php`)
       .then((res) => res.json())
       .then((data) => {
         const categories = [DEFAULT_CATEGORY, ...data.trivia_categories];
@@ -58,14 +46,18 @@ function Settings({ onStart }) {
     setQuantityMaxCount(DEFAULT_QUESTIONS_COUT);
   }
 
+  function handleChangeTimer(time) {
+    changeTimer(time);
+  }
+
   function handleOnStart() {
-    if (settings.category.id !== "any") {
+    if (settings.category.id !== "anyCategory") {
       fetch(
         `https://opentdb.com/api_count.php?category=${settings.category.id}`
       )
         .then((res) => res.json())
         .then((data) => {
-          if (settings.difficulty.id === "any") {
+          if (settings.difficulty.id === "anyDifficulty") {
             return data.category_question_count[`total_question_count`];
           } else {
             return data.category_question_count[
@@ -93,10 +85,6 @@ function Settings({ onStart }) {
     }
   }
 
-  const isQuantityError =
-    quantityMaxCount < settings.questionQuantity ||
-    settings.questionQuantity < 1;
-
   return (
     <>
       {alertMessage !== "" && <Alert severity="error">{alertMessage}</Alert>}
@@ -116,37 +104,13 @@ function Settings({ onStart }) {
             selectedOption={JSON.stringify(settings.difficulty)}
             onChange={handleChangeDifficulty}
           />
-          <FormGroup sx={{ mb: "1rem" }}>
-            <FormLabel id="timer">Number of Questions:</FormLabel>
-            <TextField
-              variant="outlined"
-              type="number"
-              min="1"
-              max={quantityMaxCount}
-              value={settings.questionQuantity}
-              onChange={(e) => changeQuestionsQuantity(e.target.value)}
-              error={isQuantityError}
-              helperText={
-                isQuantityError &&
-                `Questions quantity must be between 1 and ${quantityMaxCount}`
-              }
-              fullWidth
-            />
-          </FormGroup>
-          <FormGroup sx={{ mb: "1rem" }}>
-            <FormLabel id="timer">Timer (in seconds):</FormLabel>
-            <Select
-              labelId="timer"
-              value={settings.timer}
-              onChange={(e) => changeTimer(e.target.value)}
-            >
-              {TIMERS.map((timer) => (
-                <MenuItem key={`timer-${timer}`} value={timer}>
-                  {timer > 0 ? timer : "No Timer"}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormGroup>
+          <QuestionNumberInput quantityMaxCount={quantityMaxCount} />
+          <SelectOption
+            title="Timer (in seconds):"
+            options={TIMERS}
+            selectedOption={JSON.stringify(settings.timer)}
+            onChange={handleChangeTimer}
+          />
           <Button
             variant="contained"
             sx={{ p: "15px" }}

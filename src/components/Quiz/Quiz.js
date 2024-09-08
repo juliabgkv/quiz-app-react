@@ -1,10 +1,11 @@
 import { useContext, useEffect, useState, useCallback } from "react";
 import { Box, Button, Typography } from "@mui/material";
-import { QuizSettingsContext } from "../store/quiz-settings-context";
+import { QuizSettingsContext } from "../../store/quiz-settings-context";
 import Question from "./Question";
-import QuizCompleted from "./QuizCompleted/QuizCompleted";
-import LoadingSpinner from "./LoadingSpinner";
-import TryAgainButton from "./TryAgainButton";
+import QuizCompleted from "../QuizCompleted/QuizCompleted";
+import LoadingSpinner from "../LoadingSpinner";
+import TryAgainButton from "../TryAgainButton";
+import { createUrl } from "../../helpers/api";
 
 function Quiz({ onBackHome }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -18,15 +19,8 @@ function Quiz({ onBackHome }) {
 
   const fetchQuestions = useCallback(async () => {
     setIsLoading(true);
-    let apiUrl = `https://opentdb.com/api.php?amount=${settings.questionQuantity}`;
 
-    if (settings.category.id !== "any") {
-      apiUrl = apiUrl.concat(`&category=${settings.category.id}`);
-    }
-
-    if (settings.difficulty.id !== "any") {
-      apiUrl = apiUrl.concat(`&difficulty=${settings.difficulty.id}`);
-    }
+    let apiUrl = createUrl(settings);
 
     fetch(apiUrl)
       .then((response) => response.json())
@@ -77,38 +71,7 @@ function Quiz({ onBackHome }) {
   }
 
   function handleTryAgain() {
-    
-    setIsLoading(true);
-    let apiUrl = `https://opentdb.com/api.php?amount=${settings.questionQuantity}`;
-
-    if (settings.category.id !== "any") {
-      apiUrl = apiUrl.concat(`&category=${settings.category.id}`);
-    }
-
-    if (settings.difficulty.id !== "any") {
-      apiUrl = apiUrl.concat(`&difficulty=${settings.difficulty.id}`);
-    }
-
-    fetch(apiUrl)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.response_code === 0) {
-          const questions = data.results.map((question) => {
-            return {
-              category: question.category,
-              difficulty: question.difficulty,
-              question: question.question,
-              answers: [question.correct_answer, ...question.incorrect_answers],
-            };
-          });
-          setQuestions(questions);
-          setIsLoading(false);
-        } else if (data.response_code === 5) {
-          setQuestions(undefined);
-          setIsLoading(false);
-        }
-      })
-      .catch((error) => console.error(error));
+    fetchQuestions();
   }
 
   return (
@@ -123,10 +86,15 @@ function Quiz({ onBackHome }) {
               alignItems: "center",
             }}
           >
-            <Typography variant="h5" sx={{ fontSize: { xs: "1rem", sm: "1rem", md: "1.5rem" } }}>
+            <Typography
+              variant="h5"
+              sx={{ fontSize: { xs: "1rem", sm: "1rem", md: "1.5rem" } }}
+            >
               Question {activeQuestionIndex + 1} of {questions.length}
             </Typography>
-            <Button sx={{ fontSize: "0.8rem" }} onClick={onBackHome}>End Quiz</Button>
+            <Button sx={{ fontSize: "0.8rem" }} onClick={onBackHome}>
+              End Quiz
+            </Button>
           </Box>
           <Typography variant="subtitle2" color="text.secondary">
             Category: {settings.category.name}
@@ -151,7 +119,9 @@ function Quiz({ onBackHome }) {
           onBackHome={onBackHome}
         />
       )}
-      {!isLoading && questions === undefined && <TryAgainButton onTryAgain={handleTryAgain} />}
+      {!isLoading && questions === undefined && (
+        <TryAgainButton onTryAgain={handleTryAgain} />
+      )}
     </>
   );
 }

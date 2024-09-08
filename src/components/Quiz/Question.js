@@ -1,8 +1,8 @@
 import { useContext, useState } from "react";
-import { QuizSettingsContext } from "../store/quiz-settings-context";
+import { Box, Typography } from "@mui/material";
+import { QuizSettingsContext } from "../../store/quiz-settings-context";
 import Answers from "./Answers";
 import QuestionTimer from "./QuestionTimer";
-import { Box, Typography } from "@mui/material";
 
 function Question({ questionIndex, questions, onSelectAnswer, onSkipAnswer }) {
   const [answer, setAnswer] = useState({
@@ -20,7 +20,7 @@ function Question({ questionIndex, questions, onSelectAnswer, onSkipAnswer }) {
     answerState = "answered";
   }
 
-  let timer = settings.timer * 1000;
+  let timer = settings.timer.id * 1000;
 
   if (answerState.selectedAnswer) {
     timer = 1000;
@@ -60,7 +60,7 @@ function Question({ questionIndex, questions, onSelectAnswer, onSkipAnswer }) {
         answerState={answerState}
         onSelect={handleSelectAnswer}
       />
-      {settings.timer > 0 && 
+      {settings.timer.id > 0 && 
         <QuestionTimer
           key={timer}
           timeout={timer}
