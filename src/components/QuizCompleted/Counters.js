@@ -11,7 +11,7 @@ function Counters({ answersCount }) {
       justifyContent="center"
     >
       {Object.keys(answersCount).map((key) => (
-        <CounterItem quantity={answersCount[key]} name={capitalize(key)} />
+        <CounterItem key={`counter-${key}`} quantity={answersCount[key]} name={capitalize(key)} />
       ))}
     </Stack>
   );

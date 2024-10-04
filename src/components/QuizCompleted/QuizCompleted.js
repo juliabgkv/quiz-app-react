@@ -35,7 +35,7 @@ function QuizCompleted({
         userAnswers={userAnswers}
         answersCount={answersCount}
       />
-      {settings.timer > 0 && <Counters answersCount={answersCount} />}
+      {settings.timer.id > 0 && <Counters answersCount={answersCount} />}
       <QuizCompletedButtons
         onGenerateNewQuestions={onGenerateNewQuestions}
         onBackHome={onBackHome}
